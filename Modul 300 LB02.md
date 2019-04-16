@@ -14,11 +14,9 @@ Das man Dienste in ganz viel kleine Dienste in verschiedenen Container aufteilt 
 
 ### Wichtige Lernschritte
 
-
+Zum Thema Docker war der wichtigste Lernschritt für mich herauszufinden wie Docker aufgebaut ist und wie es funktioniert/ vorgeht. Hierzu habe ich ein kurzes Tutorial geschaut, welches sie uns auf die Lernumgebung gestellt haben. Dies gab mir einen guten Überblick wie Docker arbeitet.
 
 ## Bestehende Docker Container kombinieren
-
-
 
 ### Docker Befehle
 
