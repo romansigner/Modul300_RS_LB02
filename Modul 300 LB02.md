@@ -38,7 +38,7 @@ Ich habe 2 kleinere Docker Projekte erstellt wo ich meine Erfahrungen  gemacht h
 
 Erstere ist ein Container mit einem Apache Webserver drauf welcher eine PHP Seite zeigt welche live Aangepasst wird.
 
-Das zweite Projekt besteht aus zwei Containern einem Apache Webserver und einer MySQL Datenbank welche miteinander Kommunizieren und die Webseite zeigt an ob die Connection zwischen den Containern vorhanden ist.
+Das zweite Projekt besteht aus drei Containern,einem Apache Webserver, einer PHP Applikation und einer MySQL Datenbank welche miteinander Kommunizieren. Der Webserver nimmt die anfrage entgegen und gibt sie an die PHP Applikation weiter. Diese überprüft dann ob die Verbindung zur Datenbank funktioniert und gibt das Resultat an den Webserver zurück.  Somit zeigt die Webseite an ob die Connection zwischen den Containern vorhanden ist oder nicht.
 
 
 
@@ -65,7 +65,7 @@ COPY: Kopiert den Inhalt des Ordners welcher sich auf meinem Host befindet (src/
 Allenfalls kann dieses Verzeichnis fortlaufend Live abgerufen werden was z. B. bei einer Webseite sehr nützlich sein kann . Durch dies können Änderungen einer Webseite gleich angesehen werden ohne das der Container neu gestartet werden muss. Hierzu muss jedoch das Verzeichnis welches überprüft werden soll beim "docker run" Befehl angegeben werden.
 
 ```
-docker run -p 80:80 -v /Desktop/Docker/src/:/var/www/html/ siggy
+docker run -p 80:80 -v /home/sigi/Desktop/Docker/src/:/var/www/html/ siggy2
 ```
 
 
