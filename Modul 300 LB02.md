@@ -24,7 +24,7 @@ Bis anhin habe ich nur im ÜK mal von Containern gehört, das es sie gibt und ei
 
 #### Microservices
 
-Das man Dienste in ganz viel kleine Dienste in verschiedenen Container aufteilt war mir neu. Doch die Idee dahinter finde ich sehr Interessant. Sobald es irgendwo einen Fehler gibt kann man den Fehler gezielt lösen indem man den Container des Mirco Services neu startet.
+Das man Dienste in ganz viel kleinere Dienste in verschiedenen Container aufteilt war mir neu. Doch die Idee dahinter finde ich sehr Interessant. Sobald es irgendwo einen Fehler gibt kann man den Fehler gezielt lösen indem man den Container des Mirco Services neu startet.
 
 ### Wichtige Lernschritte
 
@@ -36,7 +36,7 @@ Zum Thema Docker war der wichtigste Lernschritt für mich herauszufinden wie Doc
 
 Ich habe 2 kleinere Docker Projekte erstellt wo ich meine Erfahrungen  gemacht habe.
 
-Erstere ist ein Container mit einem Apache Webserver drauf welcher eine PHP Seite zeigt welche live Aangepasst wird.
+Erstere ist ein Container mit einem Apache Webserver drauf welcher eine PHP Seite zeigt welche live angepasst wird.
 
 Das zweite Projekt besteht aus drei Containern,einem Apache Webserver, einer PHP Applikation und einer MySQL Datenbank welche miteinander Kommunizieren. Der Webserver nimmt die anfrage entgegen und gibt sie an die PHP Applikation weiter. Diese überprüft dann ob die Verbindung zur Datenbank funktioniert und gibt das Resultat an den Webserver zurück.  Somit zeigt die Webseite an ob die Connection zwischen den Containern vorhanden ist oder nicht.
 
@@ -89,7 +89,7 @@ docker run -p 80:80 -v /home/sigi/Desktop/Docker/src/:/var/www/html/ siggy2
 
 ### Aspekte der Container Absicherung
 
-#### Festgelegter Port
+#### Portforwarding
 
 Zur Absicherung habe ich einen spezifischen Port festgelegt auf den die Container hört. Dies habe ich mit folgendem Befehl gemacht:
 
@@ -120,7 +120,7 @@ docker run --memory="1g"
 Die CPU Ressourcen der VM habe ich eingeschränkt das diese nicht mehr beziehen kann als sie sollte. Dies lässt sich beim "docker run" Befehl ergänzen.
 
 ```
-docker run --cpus="1.5
+docker run --cpus="1.5"
 ```
 
 
@@ -129,6 +129,22 @@ docker run --cpus="1.5
 
 Durch das Trennen der einzelnen Services werden diese nicht voneinander beeinflusst und so Crasht zum Beispiel nur ein teil der Applikation und nicht das ganze System. Somit habe ich in meinem Projekt den Webserver, den PHP Server und die Datenbank voneinander getrennt.
 
+#### Verschiedene Netzwerke
+
+Ich habe 2 verschiedene Netzwerke in meinem Docker Projekt. Durch diese Trennung schütz man die Container zusätzlich. Netzwerke kann man folgendermassen überprüfen:
+
+```
+docker network ls
+```
+
+Mit diesem Befehl kann man die Netzwerk Parameter genauer anschauen:
+
+```
+docker network inspect phpapachemysql_backend 
+```
+
+
+
 ### Sicherheitsmassnahmen sind Dokumentiert
 
 In meiner Umgebung ist ein bestimmter Port festgelegt. (Port 80)
@@ -136,6 +152,45 @@ In meiner Umgebung ist ein bestimmter Port festgelegt. (Port 80)
 Ausserdem wurden alle Services voneinander getrennt, wodurch diese sich nicht gegenseitig beeinflussen können.
 
 Das kleinere Projekt kann ich ausserdem auch mit eingeschränkten Ressourcen starten.
+
+Zwei verschiedene Netze wurden im Projekt verwendet, ein internes und ein externes.
+
+Docker lässt sich nur als Root starten.
+
+### Service Überwachung + Aktive Benachrichtigung
+
+Ich habe eine Service Überwachungs Bash Skript geschrieben welches kontrolliert ob der Docker Service läuft. Dieses Skript wird über crontab jede Minute ausgeführt, läuft der Service nicht verschickt das Skript eine Email an meine private Email Adresse. 
+
+Überwachung kann getestet werden indem man den Docker Service stoppt mit:
+
+```
+service docker stop
+```
+
+Das Überwachungs Skript sieht folgendermassen aus:
+
+```
+#!/bin/bash
+
+service=$@
+/bin/systemctl -q is-active "$service.service"
+status=$?
+if [ "$status" == 0 ]; then
+    echo "OK"
+else
+   mail -s "docker down" roman_signer@hotmail.com
+fi
+```
+
+Der Crontab sieht so aus:
+
+```
+* * * * * /var/scripts/watch-service docker
+```
+
+Die Systeme interne Meldung sieht so aus:
+
+![neue Mail](C:\Users\sppm0061\Module\Modul 300\LB02\neue Mail.png)
 
 ## Zusätzliche Bewertungspunkte (K5)
 
@@ -158,3 +213,9 @@ Ich hatte einige spezielle Probleme mit Docker, da ich Docker nicht  auf meinem 
 ### Continuous Integration
 
 Ich habe in meinem ersten Docker Projekt, realisiert das Änderungen am PHP File für meinen Webserver gleich übernommen werden und somit die Seite immer top aktuell ist.  
+
+### Image-Bereitstellung
+
+Ich habe eines meiner Images auch andern über Dockerhub zur Verfügung gestellt. 
+
+![Imagebereitstellung](C:\Users\sppm0061\Module\Modul 300\LB02\Imagebereitstellung.png)
